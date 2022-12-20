@@ -13,6 +13,7 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    `maven-publish`
 }
 
 repositories {
@@ -39,6 +40,27 @@ testing {
                 // Use newer version of JUnit Engine for Kotlin Test
                 implementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
             }
+        }
+    }
+}
+
+group = "dev.nathanmkaya"
+version = "0.0.1-SNAPSHOT"
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/nathanmkaya/GithubPackageRepositoryDemo")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        register<MavenPublication>("gpr") {
+            from(components["java"])
         }
     }
 }
